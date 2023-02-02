@@ -51,6 +51,7 @@ async function detailArticle(event) {
         <p>글쓴시각:${data.created_time}</p>
         <p>업데이트:${data.updated_time}</p>
         <button onclick="closeModal()">닫기</button>
+        <button onclick="deleteArticle(${data.id})">삭제</button>
     </div>`)
 }
 async function insertArticles(category) {
