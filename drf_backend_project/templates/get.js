@@ -30,8 +30,10 @@ async function deleteArticle(id) {
 }
 const closeModal = () => {
     let modal = document.getElementById('modal');
+    let item = document.getElementById('item');
     modal.style.animation = 'fadeout 2s';
     setTimeout(() => modal.style.display = 'none', 2000);
+    item.empty();
 }
 async function detailArticle(event) {
     let modal = document.getElementById('modal');
@@ -51,9 +53,12 @@ async function detailArticle(event) {
         <button onclick="closeModal()">닫기</button>
     </div>`)
 }
-async function insertArticles() {
+async function insertArticles(category) {
     let datas = await getArticles();
-    datas.forEach((data, index) => {
+    const happy = datas.filter((data) => {
+        return data.category.id===category;
+    })
+    happy.forEach((data, index) => {
         document.body.insertAdjacentHTML('beforeEnd',`
         <hr>
         <div onclick="detailArticle(event)" id="${data.id}">
@@ -65,5 +70,23 @@ async function insertArticles() {
         `)
     })
 }
-
-insertArticles()
+async function getCategory() {
+    let response = await fetch(`${SERVER_URL}/blog/category`);
+    let data = await response.json()
+    return data;
+}
+async function categorys() {
+    let datas = await getCategory();
+    let select = document.getElementsByTagName('select')[0];
+    datas.forEach((data, index) => {
+        select.insertAdjacentHTML('beforeEnd',`
+            <option value="${data.id}">${data.name}</option>
+        `);
+    })
+}
+categorys()
+function changeValue() {
+    var value_str = document.getElementById('select');
+    console.log(value_str)
+    insertArticles(Number(value_str.options[value_str.selectedIndex].value))
+}
